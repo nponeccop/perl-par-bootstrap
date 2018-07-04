@@ -1,0 +1,21 @@
+skip_tags: true
+cache:
+  - C:\strawberry\perl\site
+install:
+  - cinst strawberryperl
+  - refreshenv
+  - set BP=c:\strawberry
+  - set PP=%BP%\perl
+  - path %SystemRoot%\system32;%PP%\site\bin;%PP%\vendor\bin;%PP%\bin;%BP%\c\bin
+  - cpanm CPANPLUS::Dist::PAR
+build_script:
+  - perl setconfig.pl
+  - cpanp i CPANPLUS::Dist::PAR
+  - cpanp o >outdated.txt
+  - type outdated.txt
+  - mkdir PARs
+  - copy %USERPROFILE%\.cpanplus\5.26.2\dist\PAR\*.par PARs\
+artifacts:
+  - path: PARs
+    name: pars_zip
+    type: zip
