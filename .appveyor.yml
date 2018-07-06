@@ -1,6 +1,5 @@
 skip_tags: true
 cache:
-  - C:\strawberry\perl\site
 install:
   - cinst strawberryperl
   - refreshenv
@@ -10,16 +9,19 @@ install:
   - path %SystemRoot%\system32;%PP%\site\bin;%PP%\vendor\bin;%PP%\bin;%BP%\c\bin
   - cpanm CPANPLUS::Dist::PAR
 build_script:
+  - chcp 65001
   - perl setconfig.pl
-  - cpanp i CPANPLUS::Dist::PAR PAR::Repository
-  - mkdir PARs
-  - copy setconfig.pl PARs\
-  - parrepo create -r PARs\repo
-  - parrepo inject -r PARS\repo --file "%USERPROFILE%\.cpanplus\5.26.2\dist\PAR\*.par"
+  - cpanp i         Function-Parameters MetaCPAN-Client CPANPLUS-Dist-PAR PAR-Repository
+  - perl rundeps.pl Function-Parameters MetaCPAN-Client CPANPLUS-Dist-PAR PAR-Repository
+  - copy *.pl PARs\runtime
+  - parrepo create -r PARs\build\build
+  - parrepo inject -r PARS\build\build --file "%USERPROFILE%\.cpanplus\5.26.2\dist\PAR\*.par"
   - cpanp o >outdated.txt
   - type outdated.txt
-
 artifacts:
-  - path: PARs
-    name: pars_zip
+  - path: PARs\build
+    name: pars_build
+    type: zip
+  - path: PARs\runtime
+    name: pars_runtime
     type: zip
