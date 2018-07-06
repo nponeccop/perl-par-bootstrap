@@ -4,18 +4,21 @@ cache:
 install:
   - cinst strawberryperl
   - refreshenv
+  - chcp 65001
   - set BP=c:\strawberry
   - set PP=%BP%\perl
   - path %SystemRoot%\system32;%PP%\site\bin;%PP%\vendor\bin;%PP%\bin;%BP%\c\bin
   - cpanm CPANPLUS::Dist::PAR
 build_script:
   - perl setconfig.pl
-  - cpanp i CPANPLUS::Dist::PAR
+  - cpanp i CPANPLUS::Dist::PAR PAR::Repository
+  - mkdir PARs
+  - copy setconfig.pl PARs\
+  - parrepo create -r PARs\repo
+  - parrepo inject -r PARS\repo --file "%USERPROFILE%\.cpanplus\5.26.2\dist\PAR\*.par"
   - cpanp o >outdated.txt
   - type outdated.txt
-  - mkdir PARs
-  - copy %USERPROFILE%\.cpanplus\5.26.2\dist\PAR\*.par PARs\
-  - copy setconfig.pl PARs\
+
 artifacts:
   - path: PARs
     name: pars_zip
