@@ -15,6 +15,7 @@ build_script:
   - type outdated.txt
   - mkdir PARs
   - copy %USERPROFILE%\.cpanplus\5.26.2\dist\PAR\*.par PARs\
+  - copy setconfig.pl PARs\
 artifacts:
   - path: PARs
     name: pars_zip
