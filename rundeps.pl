@@ -2,10 +2,7 @@ use common::sense;
 use Function::Parameters;
 use MetaCPAN::Client;
 use Module::CoreList;
-# use PAR::Repository;
-
 use Config;
-use Data::Dumper;
 use File::Spec::Functions;
 use PAR::Repository;
 
