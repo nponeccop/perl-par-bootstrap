@@ -18,7 +18,7 @@ install:
   - chcp 65001 && cpanm CPANPLUS::Dist::PAR
 build_script:
   - perl setconfig.pl
-  - chcp 65001 && cpanp i Test-Pod-Coverage Function-Parameters
+  - chcp 65001 && cpanp i Test-Pod-Coverage Function-Parameters Readonly
 # indirect Exporter-Lexical Sub-StrictDecl Devel-CheckBin Devel-Declare Data-Alias Devel-CallParser Devel-Hide Validation-Class Type-Tiny-XS Type-Tiny Type-Tie Switcheroo Function-Parameters Mouse MouseX-Types Readonly-XS Readonly MouseX-Types-Common Class-InsideOut match-simple-XS match-simple MooseX-Getopt
   - chcp 65001 && cpanp i MetaCPAN-Client CPANPLUS-Dist-PAR PAR-Repository
   - perl rundeps.pl       Function-Parameters MetaCPAN-Client CPANPLUS-Dist-PAR PAR-Repository
@@ -26,10 +26,6 @@ build_script:
   - parrepo create -r PARs\build\build
   - dir /b "%USERPROFILE%\.cpanplus"
   - parrepo inject -r PARS\build\build --file "%USERPROFILE%\.cpanplus\%STRAWBERRY_CONFIG_VERSION%\dist\PAR\*.par"
-  - dir /b PARs
-  - dir /b PARs\build
-  - dir /b PARs\runtime
-#  - appveyor PushArtifact PARs\runtime\* -FileName "pars-runtime-%APPVEYOR_BUILD_NUMBER%-%STRAWBERRY_CONFIG_VERSION%" -type Zip
   - cpanp o >outdated.txt
   - type outdated.txt
 artifacts:
@@ -37,5 +33,5 @@ artifacts:
     name: pars_build-$(APPVEYOR_BUILD_NUMBER)-$(STRAWBERRY_CONFIG_VERSION)
     type: zip
   - path: PARs\runtime
-    name: pars_runtime
+    name: pars_runtime-$(APPVEYOR_BUILD_NUMBER)-$(STRAWBERRY_CONFIG_VERSION)
     type: zip
