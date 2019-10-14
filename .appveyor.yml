@@ -1,27 +1,37 @@
+environment:
+  matrix:
+    - STRAWBERRY_VERSION: 5.28.0.1
+    - STRAWBERRY_VERSION: 5.24.0.1
 skip_tags: true
 cache:
 install:
-  - cinst strawberryperl
+  - where appveyor
+  - cinst strawberryperl --version %STRAWBERRY_VERSION%
   - refreshenv
-  - chcp 65001
   - set BP=c:\strawberry
   - set PP=%BP%\perl
-  - path %SystemRoot%\system32;%PP%\site\bin;%PP%\vendor\bin;%PP%\bin;%BP%\c\bin
-  - cpanm CPANPLUS::Dist::PAR
+  - path %SystemRoot%\system32;%PP%\site\bin;%PP%\vendor\bin;%PP%\bin;%BP%\c\bin;C:\Program Files\AppVeyor\BuildAgent
+  - FOR /F %%I IN ('perl -MConfig -e "print $Config{version};"') DO SET STRAWBERRY_CONFIG_VERSION=%%I
+    # ' Tests fail: Kavorka Lexical-Var
+    # Moops - depends on Kavorka
+  - echo Installed %STRAWBERRY_VERSION% got %STRAWBERRY_CONFIG_VERSION%
+  - chcp 65001 && cpanm CPANPLUS::Dist::PAR
 build_script:
-  - chcp 65001
   - perl setconfig.pl
-  - cpanp i         Function-Parameters MetaCPAN-Client CPANPLUS-Dist-PAR PAR-Repository
-  - perl rundeps.pl Function-Parameters MetaCPAN-Client CPANPLUS-Dist-PAR PAR-Repository
+  - chcp 65001 && cpanp i Test-Pod-Coverage Function-Parameters Readonly
+# indirect Exporter-Lexical Sub-StrictDecl Devel-CheckBin Devel-Declare Data-Alias Devel-CallParser Devel-Hide Validation-Class Type-Tiny-XS Type-Tiny Type-Tie Switcheroo Function-Parameters Mouse MouseX-Types Readonly-XS Readonly MouseX-Types-Common Class-InsideOut match-simple-XS match-simple MooseX-Getopt
+  - chcp 65001 && cpanp i MetaCPAN-Client CPANPLUS-Dist-PAR PAR-Repository
+  - perl rundeps.pl       Function-Parameters MetaCPAN-Client CPANPLUS-Dist-PAR PAR-Repository
   - copy *.pl PARs\runtime
   - parrepo create -r PARs\build\build
-  - parrepo inject -r PARS\build\build --file "%USERPROFILE%\.cpanplus\5.26.2\dist\PAR\*.par"
+  - dir /b "%USERPROFILE%\.cpanplus"
+  - parrepo inject -r PARS\build\build --file "%USERPROFILE%\.cpanplus\%STRAWBERRY_CONFIG_VERSION%\dist\PAR\*.par"
   - cpanp o >outdated.txt
   - type outdated.txt
 artifacts:
   - path: PARs\build
-    name: pars_build
+    name: pars_build-$(APPVEYOR_BUILD_NUMBER)-$(STRAWBERRY_CONFIG_VERSION)
     type: zip
   - path: PARs\runtime
-    name: pars_runtime
+    name: pars_runtime-$(APPVEYOR_BUILD_NUMBER)-$(STRAWBERRY_CONFIG_VERSION)
     type: zip
