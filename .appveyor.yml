@@ -29,12 +29,12 @@ build_script:
   - dir /b PARs
   - dir /b PARs\build
   - dir /b PARs\runtime
-  - appveyor PushArtifact PARs\runtime\* -FileName "pars-runtime-%APPVEYOR_BUILD_NUMBER%-%STRAWBERRY_CONFIG_VERSION%" -type Zip
+#  - appveyor PushArtifact PARs\runtime\* -FileName "pars-runtime-%APPVEYOR_BUILD_NUMBER%-%STRAWBERRY_CONFIG_VERSION%" -type Zip
   - cpanp o >outdated.txt
   - type outdated.txt
 artifacts:
   - path: PARs\build
-    name: pars_build
+    name: pars_build-$(APPVEYOR_BUILD_NUMBER)-$(STRAWBERRY_CONFIG_VERSION)
     type: zip
   - path: PARs\runtime
     name: pars_runtime
